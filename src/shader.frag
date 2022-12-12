@@ -9,7 +9,7 @@ uniform float theta;
 uniform float dots;
 uniform float scale;
 uniform vec3 baseColor;
-uniform vec3 markerColor;
+uniform vec3 markerColors[64];
 uniform vec3 glowColor;
 uniform vec4 markers[64];
 uniform float markersNum;
@@ -182,9 +182,10 @@ void main() {
         vec3 mP = nearestFibonacciLattice(c, dis);
         dis = length(mP - rP);
         if (dis < size) { markerLight += smoothstep(size*.5,0.,dis); }
+        vec3 markerColor = markerColors[m];
+        markerLight = min(1., markerLight * lighting);
+        layer.xyz = mix(layer.xyz, markerColor, markerLight);
       }
-      markerLight = min(1., markerLight * lighting);
-      layer.xyz = mix(layer.xyz, markerColor, markerLight);
       layer.xyz += pow(1. - dotNL, 4.) * glowColor;
 
       color += layer * (1. + (side > 0 ? -opacity : opacity)) / 2.;

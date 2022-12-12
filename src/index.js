@@ -22,7 +22,7 @@ const OPT_MAPPING = {
   [OPT_DOTS]: GLSLX_NAME_DOTS,
   [OPT_MAP_BRIGHTNESS]: GLSLX_NAME_DOTS_BRIGHTNESS,
   [OPT_BASE_COLOR]: GLSLX_NAME_BASE_COLOR,
-  [OPT_MARKER_COLOR]: GLSLX_NAME_MARKER_COLOR,
+  [OPT_MARKER_COLOR]: GLSLX_NAME_MARKER_COLORS,
   [OPT_GLOW_COLOR]: GLSLX_NAME_GLOW_COLOR,
   [OPT_DIFFUSE]: GLSLX_NAME_DIFFUSE,
   [OPT_DARK]: GLSLX_NAME_DARK,
@@ -46,6 +46,10 @@ const mapMarkers = (markers) => {
     // Make sure to fill zeros
     [0, 0, 0, 0]
   )
+}
+
+const mapMarkerColors = (markers, fallbackColor) => {
+  return [].concat(...markers.map(m => m.color ?? fallbackColor))
 }
 
 export default (canvas, opts) => {
@@ -131,7 +135,10 @@ export default (canvas, opts) => {
         OPT_MAP_BASE_BRIGHTNESS
       ),
       [GLSLX_NAME_BASE_COLOR]: createUniform('vec3', OPT_BASE_COLOR),
-      [GLSLX_NAME_MARKER_COLOR]: createUniform('vec3', OPT_MARKER_COLOR),
+      [GLSLX_NAME_MARKER_COLORS]: {
+        type: 'vec3',
+        value: mapMarkerColors(opts[OPT_MARKERS], opts[OPT_MARKER_COLOR])
+      },
       [GLSLX_NAME_DIFFUSE]: createUniform('float', OPT_DIFFUSE),
       [GLSLX_NAME_GLOW_COLOR]: createUniform('vec3', OPT_GLOW_COLOR),
       [GLSLX_NAME_DARK]: createUniform('float', OPT_DARK),
